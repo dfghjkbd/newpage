@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facebook Login</title>
+    <style>
+        button {
+            background-color: #4267b2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Welcome to Facebook Page Manager</h2>
+
+<!-- Login and Logout buttons -->
+<div id="auth-buttons">
+    <button id="login-button" onclick="login()">Login with Facebook</button>
+    <button id="logout-button" class="hidden" onclick="logout()">Logout</button>
+</div>
+
+<!-- Facebook SDK for JavaScript -->
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) { return; }
+    js = d.createElement(s); js.id = id;
+    js.src = "https://connect.facebook.net/en_US/sdk.js";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '516291434195463', // Your Facebook App ID
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v20.0'
+    });
+
+    // Check the user's login status on page load
+    FB.getLoginStatus(function(response) {
+      handleAuthStatusChange(response);
+    });
+  };
+
+  function handleAuthStatusChange(response) {
+    if (response.status === 'connected') {
+      document.getElementById("login-button").classList.add("hidden");
+      document.getElementById("logout-button").classList.remove("hidden");
+      window.location.href = "page.html"; // Redirect to the page manager
+    } else {
+      document.getElementById("login-button").classList.remove("hidden");
+      document.getElementById("logout-button").classList.add("hidden");
+    }
+  }
+
+  function login() {
+    FB.login(function(response) {
+      if (response.status === 'connected') {
+        handleAuthStatusChange(response);
+      } else {
+        alert('Login failed. Please try again.');
+      }
+    }, {scope: 'pages_manage_posts,pages_read_engagement'});
+  }
+
+  function logout() {
+    FB.logout(function(response) {
+      handleAuthStatusChange(response);
+    });
+  }
+</script>
+
+</body>
+</html>
