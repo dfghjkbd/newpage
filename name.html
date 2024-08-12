@@ -157,14 +157,20 @@
         FB.api(
             `/${selectedPageId}/posts`,
             'GET',
-            { access_token: accessToken, fields: 'id,message,created_time' },
+            { access_token: accessToken, fields: 'id,message,created_time,likes.summary(true),shares' },
             function(response) {
                 if (response && !response.error) {
                     let postsList = document.getElementById("page-posts-list");
                     postsList.innerHTML = '';
                     response.data.forEach(post => {
                         let listItem = document.createElement('li');
-                        listItem.innerHTML = `<b>Post ID:</b> ${post.id} <br> <b>Message:</b> ${post.message || 'No content'} <br> <b>Created:</b> ${new Date(post.created_time).toLocaleString()}`;
+                        listItem.innerHTML = `
+                            <b>Post ID:</b> ${post.id} <br> 
+                            <b>Message:</b> ${post.message || 'No content'} <br> 
+                            <b>Created:</b> ${new Date(post.created_time).toLocaleString()} <br> 
+                            <b>Likes:</b> ${post.likes ? post.likes.summary.total_count : 0} <br> 
+                            <b>Shares:</b> ${post.shares ? post.shares.count : 0}
+                        `;
                         postsList.appendChild(listItem);
                     });
                     document.getElementById("page-posts").style.display = 'block';
